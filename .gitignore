@@ -1,0 +1,45 @@
+# Environnement virtuel
+env/
+venv/
+ENV/
+env.bak/
+*.env
+
+# Fichiers et dossiers de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pylintrc
+
+# Configurations de l'éditeur
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Base de données SQLite
+db.sqlite3
+
+# Migrations de Django
+**/migrations/
+
+# Fichiers et dossiers statiques et média
+staticfiles/
+media/
+
+# Fichiers de logs
+*.log
+logs/
+
+# Fichiers temporaires
+*.tmp
+*.bak
+.DS_Store
+
+# Cache et autres
+*.egg-info/
+*.eggs/
+*.out
+*.bin
+node_modules/
