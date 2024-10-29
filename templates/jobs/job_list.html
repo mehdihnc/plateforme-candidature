@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Offres d'emploi{% endblock %}
+
+{% block content %}
+<h1>Offres d'emploi disponibles</h1>
+<div class="row">
+    {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <p class="card-text">{{ job.description|truncatewords:30 }}</p>
+                    <a href="{% url 'job_detail' job.pk %}" class="btn btn-primary">Voir détails</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Aucune offre d'emploi disponible.</p>
+    {% endfor %}
+</div>
+{% endblock %} 

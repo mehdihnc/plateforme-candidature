@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Postuler - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Postuler pour : {{ job.title }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="alert alert-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
