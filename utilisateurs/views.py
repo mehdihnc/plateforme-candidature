@@ -1,26 +1,61 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .models import ProfilCandidat
+from django.views.generic import TemplateView, CreateView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import User
+from django.shortcuts import redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import DetailView
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('profile')
-        else:
-            messages.error(request, 'Invalid username or password.')
-    return render(request, 'utilisateurs/login.html')
+from utilisateurs.forms import UserRegistrationForm
+from .models import UserProfile
+from django.urls import reverse_lazy
+from django import forms
 
-@login_required
-def profile_view(request):
-    profil = ProfilCandidat.objects.get(utilisateur=request.user)
-    if request.method == 'POST':
+class HomeView(TemplateView):
+    template_name = 'utilisateurs/home.html'
+
+class CandidateRegisterView(CreateView):
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'utilisateurs/register.html'
+    success_url = reverse_lazy('candidate_profile')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        UserProfile.objects.create(user=self.object, user_type='candidate')
+        return response
+
+
+class RecruiterRegisterView(CreateView):
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'utilisateurs/register.html'
+    success_url = reverse_lazy('recruiter_dashboard')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        UserProfile.objects.create(user=self.object, user_type='recruiter')
+        return response
+    
+class CustomLoginView(LoginView):
+    template_name = 'utilisateurs/login.html'
+
+    def get_success_url(self):
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        if user_profile.user_type == 'candidate':
+            return reverse_lazy('candidate_profile')
+        elif user_profile.user_type == 'recruiter':
+            return reverse_lazy('recruiter_dashboard')
         
-        profil.cv = request.FILES.get('cv')
-        profil.save()
-    return render(request, 'utilisateurs/profile.html', {'profil': profil})
+class CandidateProfileView(LoginRequiredMixin, DetailView):
+    model = UserProfile
+    template_name = 'utilisateurs/candidate_profile.html'
+
+    def get_object(self):
+        return UserProfile.objects.get(user=self.request.user, user_type='candidate')
+
+    
+class RecruiterDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'utilisateurs/recruiter_dashboard.html'
+
+    def test_func(self):
+        return UserProfile.objects.filter(user=self.request.user, user_type='recruiter').exists()
