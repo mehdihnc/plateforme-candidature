@@ -5,25 +5,55 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2>Postuler pour : {{ job.title }}</h2>
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'job_list' %}" class="text-decoration-none">
+                        <i class="fas fa-list me-1"></i>Offres d'emploi
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'job_detail' job.pk %}" class="text-decoration-none">
+                        {{ job.title }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">Postuler</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-paper-plane me-2"></i>Postuler pour : {{ job.title }}
+                </h2>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
                     {% for field in form %}
                         <div class="mb-3">
-                            {{ field.label_tag }}
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
                             {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text text-muted">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
                             {% if field.errors %}
-                                <div class="alert alert-danger">
+                                <div class="alert alert-danger mt-2">
                                     {{ field.errors }}
                                 </div>
                             {% endif %}
                         </div>
                     {% endfor %}
-                    <button type="submit" class="btn btn-primary">Envoyer ma candidature</button>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Envoyer ma candidature
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
