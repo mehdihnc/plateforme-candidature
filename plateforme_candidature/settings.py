@@ -131,4 +131,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Configuration de l'authentification
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'job_list'
-LOGOUT_REDIRECT_URL = 'login'
+LOGOUT_REDIRECT_URL = 'job_list'

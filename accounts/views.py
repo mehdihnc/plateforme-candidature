@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserProfileForm, UserRegistrationForm
@@ -27,3 +28,8 @@ def profile(request):
     else:
         form = UserProfileForm(instance=request.user.userprofile)
     return render(request, 'accounts/profile.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Vous avez été déconnecté avec succès.')
+    return redirect('job_list')
