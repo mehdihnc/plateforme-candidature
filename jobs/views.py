@@ -5,6 +5,10 @@ from .models import JobOffer, Application
 from .forms import ApplicationForm
 
 def job_list(request):
+    """
+    Affiche la liste des offres d'emploi actives.
+    Accessible à tous les utilisateurs.
+    """
     jobs = JobOffer.objects.filter(is_active=True)
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
 
@@ -18,6 +22,10 @@ def job_detail(request, pk):
 
 @login_required
 def apply_job(request, pk):
+    """
+    Permet à un utilisateur connecté de postuler à une offre.
+    Vérifie si l'utilisateur n'a pas déjà postulé.
+    """
     job = get_object_or_404(JobOffer, pk=pk)
     if Application.objects.filter(user=request.user, job=job).exists():
         messages.warning(request, 'Vous avez déjà postulé à cette offre.')

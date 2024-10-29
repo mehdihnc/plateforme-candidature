@@ -17,3 +17,8 @@ env/
 # IDE
 .vscode/
 .idea/
+db.sqlite3
+*.pyc
+__pycache__/
+media/
+venv/
